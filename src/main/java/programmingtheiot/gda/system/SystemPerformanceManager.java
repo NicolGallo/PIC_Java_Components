@@ -62,7 +62,7 @@ public class SystemPerformanceManager
 
 	}
 	
-	
+	//
 	// public methods
 	
 	public void handleTelemetry()
