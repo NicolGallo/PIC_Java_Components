@@ -128,6 +128,9 @@ public class SystemStateData extends BaseIotData implements Serializable
 			//this.addSensorData(ssData.getSensorDataList());
 			//this.addSystemPerformanceData(ssData.getSystemPerformanceDataList());
 
+			//TODO: Ver si se puede arreglar este metodo, ya que el SystemStateData es opcional. Cualquier cosa dejar
+			//comentado que se ha medio hecho.
+
 		}
 	}
 }

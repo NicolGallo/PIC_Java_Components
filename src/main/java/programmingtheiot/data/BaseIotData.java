@@ -60,8 +60,7 @@ public abstract class BaseIotData implements Serializable
 	{
 		super();
 		
-		String locID =
-			ConfigUtil.getInstance().getProperty(
+		String locID = ConfigUtil.getInstance().getProperty(
 				ConfigConst.GATEWAY_DEVICE, ConfigConst.DEVICE_LOCATION_ID_KEY);
 		
 		this.setLocationID(locID);
