@@ -28,46 +28,71 @@ public class SystemStateData extends BaseIotData implements Serializable
 	
 	
 	// private var's
-	
-    
+
+	private int command = ConfigConst.DEFAULT_COMMAND;
+	private List <SystemPerformanceData> sysPerfDataList = null;
+	private List <SensorData> sensorDataList = null;
     
 	// constructors
 	
-	public SystemStateData()
-	{
+	public SystemStateData() {
+
 		super();
+		super.setName(ConfigConst.SYS_STATE_DATA);
+
+		this.sysPerfDataList = new ArrayList <> ();
+		this.sensorDataList  = new ArrayList <> ();
+
 	}
 	
 	
 	// public methods
 	
-	public boolean addSensorData(SensorData data)
-	{
+	public boolean addSensorData(SensorData sensorData) {
+
+		if (sensorData != null) {
+
+			this.sensorDataList.add(sensorData);
+
+		}
+
 		return false;
 	}
 	
-	public boolean addSystemPerformanceData(SystemPerformanceData data)
-	{
+	public boolean addSystemPerformanceData(SystemPerformanceData sysPerfData) {
+
+		if (sysPerfData != null) {
+
+			this.sysPerfDataList.add(sysPerfData);
+
+		}
+
 		return false;
 	}
 	
-	public int getCommand()
-	{
-		return 0;
+	public int getCommand() {
+
+		return this.command;
+
 	}
 	
-	public List<SensorData> getSensorDataList()
-	{
-		return null;
+	public List<SensorData> getSensorDataList() {
+
+			return this.sensorDataList;
+
 	}
 	
-	public List<SystemPerformanceData> getSystemPerformanceDataList()
-	{
-		return null;
+	public List<SystemPerformanceData> getSystemPerformanceDataList() {
+
+		return this.sysPerfDataList;
+
 	}
 	
-	public void setCommand(int actionCmd)
-	{
+	public void setCommand(int actionCmd) {
+
+		super.updateTimeStamp();
+		this.command = actionCmd;
+
 	}
 	
 	/**
@@ -94,8 +119,15 @@ public class SystemStateData extends BaseIotData implements Serializable
 	/* (non-Javadoc)
 	 * @see programmingtheiot.data.BaseIotData#handleUpdateData(programmingtheiot.data.BaseIotData)
 	 */
-	protected void handleUpdateData(BaseIotData data)
-	{
+	protected void handleUpdateData(BaseIotData data) {
+
+		if (data instanceof SystemStateData) {
+
+			SystemStateData ssData = (SystemStateData) data;
+			this.setCommand(ssData.getCommand());
+			//this.addSensorData(ssData.getSensorDataList());
+			//this.addSystemPerformanceData(ssData.getSystemPerformanceDataList());
+
+		}
 	}
-	
 }
