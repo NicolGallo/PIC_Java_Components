@@ -10,6 +10,8 @@ package programmingtheiot.gda.app;
 
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.databind.util.Converter;
+import org.apache.commons.lang3.ObjectUtils;
 import programmingtheiot.common.ConfigConst;
 import programmingtheiot.common.ConfigUtil;
 import programmingtheiot.common.IActuatorDataListener;
@@ -54,7 +56,8 @@ public class DeviceDataManager implements IDataMessageListener
 	private IRequestResponseClient smtpClient = null;
 	private CoapServerGateway coapServer = null;
 	private SystemPerformanceManager sysPerfMgr = null;
-	
+	private IActuatorDataListener dataMsgListener = null;
+
 	// constructors
 	
 	public DeviceDataManager()
@@ -79,10 +82,6 @@ public class DeviceDataManager implements IDataMessageListener
 				ConfigConst.GATEWAY_DEVICE,
 				ConfigConst.ENABLE_PERSISTENCE_CLIENT_KEY);
 
-		this.enableSystemPerf = configUtil.getBoolean(
-				ConfigConst.GATEWAY_DEVICE,
-				ConfigConst.ENABLE_SYSTEM_PERF_KEY);
-		
 		initConnections();
 	}
 	
@@ -91,8 +90,7 @@ public class DeviceDataManager implements IDataMessageListener
 		boolean enableCoapClient,
 		boolean enableCloudClient,
 		boolean enableSmtpClient,
-		boolean enablePersistenceClient,
-		boolean enableSystemPerf)
+		boolean enablePersistenceClient)
 
 	{
 
@@ -181,8 +179,13 @@ public class DeviceDataManager implements IDataMessageListener
 
 	}
 	
-	public void setActuatorDataListener(String name, IActuatorDataListener listener)
-	{
+	public void setActuatorDataListener(String name, IActuatorDataListener listener) {
+
+		if (listener != null) {
+
+			this.dataMsgListener = listener;
+
+		}
 	}
 
 
@@ -219,15 +222,11 @@ public class DeviceDataManager implements IDataMessageListener
 
 		ConfigUtil configUtil = ConfigUtil.getInstance();
 
-
-
 		if (this.enableSystemPerf) {
 
 			this.sysPerfMgr = new SystemPerformanceManager();
 			this.sysPerfMgr.setDataMessageListener(this);
-
 		}
-
 
 		if (this.enableMqttClient) {
 			// TODO: implement this in Lab Module 7
