@@ -10,8 +10,6 @@ package programmingtheiot.gda.app;
 
 import java.util.logging.Logger;
 
-import com.fasterxml.jackson.databind.util.Converter;
-import org.apache.commons.lang3.ObjectUtils;
 import programmingtheiot.common.ConfigConst;
 import programmingtheiot.common.ConfigUtil;
 import programmingtheiot.common.IActuatorDataListener;
@@ -47,7 +45,7 @@ public class DeviceDataManager implements IDataMessageListener
 	private boolean enableCloudClient = false;
 	private boolean enableSmtpClient = false;
 	private boolean enablePersistenceClient = false;
-	private boolean enableSystemPerf = true;
+	private boolean enableSystemPerf = false;
 	
 	private IActuatorDataListener actuatorDataListener = null;
 	private IPubSubClient mqttClient = null;
@@ -82,6 +80,7 @@ public class DeviceDataManager implements IDataMessageListener
 				ConfigConst.GATEWAY_DEVICE,
 				ConfigConst.ENABLE_PERSISTENCE_CLIENT_KEY);
 
+		initManager();
 		initConnections();
 	}
 	
@@ -96,6 +95,7 @@ public class DeviceDataManager implements IDataMessageListener
 
 		super();
 
+		initManager();
 		initConnections();
 
 	}
@@ -220,7 +220,15 @@ public class DeviceDataManager implements IDataMessageListener
 	 */
 	private void initConnections() {
 
-		ConfigUtil configUtil = ConfigUtil.getInstance();
+	}
+
+
+	private void initManager() {
+
+	ConfigUtil configUtil = ConfigUtil.getInstance();
+
+		this.enableSystemPerf =
+				configUtil.getBoolean(ConfigConst.GATEWAY_DEVICE,  ConfigConst.ENABLE_SYSTEM_PERF_KEY);
 
 		if (this.enableSystemPerf) {
 
@@ -242,8 +250,13 @@ public class DeviceDataManager implements IDataMessageListener
 
 		if (this.enablePersistenceClient) {
 			// TODO: implement this as an optional exercise in Lab Module 5
+
 		}
 	}
+
+
+
+
 
 	private void handleIncomingDataAnalysis(ResourceNameEnum resourceName, ActuatorData data) {
 

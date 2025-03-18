@@ -21,6 +21,9 @@ import programmingtheiot.common.ConfigConst;
  */
 public class SystemCpuUtilTask extends BaseSystemUtilTask
 {
+	// private
+	private static final Logger _Logger = Logger.getLogger(BaseSystemUtilTask.class.getName());
+
 	// constructors
 	
 	/**
@@ -34,7 +37,7 @@ public class SystemCpuUtilTask extends BaseSystemUtilTask
 	
 	
 	// public methods
-	
+
 	@Override
 	public float getTelemetryValue()
 	{
