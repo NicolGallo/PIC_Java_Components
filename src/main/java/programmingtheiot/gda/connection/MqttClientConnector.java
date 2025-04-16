@@ -249,7 +249,7 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 
 		try {
 			this.mqttClient.subscribe(topicName.getResourceName(), qos);
-			_Logger.info("Congrats! Client successfully subscribed to topic: " + topicName.getResourceName());
+			_Logger.info("Congrats!Client successfully subscribed to topic: " + topicName.getResourceName());
 			return true;
 		} catch (Exception e) {
 			_Logger.log(Level.SEVERE, "Error! Failed to subscribe to topic: " + topicName, e);
