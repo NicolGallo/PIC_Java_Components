@@ -182,17 +182,7 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 	//Verifies whether the MQTT client is currently connected
 	public boolean isConnected()
 	{
-		//mqttClient not initialized
-		if (this.mqttClient == null) {
-			return false;
-		}
-
-		// Ensure that the mqttClient is of the expected synchronous MqttClient type
-		if (!(this.mqttClient instanceof MqttClient)) {
-			return false;
-		}
-
-		return this.mqttClient.isConnected();
+		return false;
 	}
 	
 	@Override
@@ -296,7 +286,6 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 	}
 	
 	// callbacks
-	
 	@Override
 	public void connectComplete(boolean reconnect, String serverURI)
 	{
