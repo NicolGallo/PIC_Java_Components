@@ -192,7 +192,7 @@ public class DeviceDataManager implements IDataMessageListener
 
 		if (listener != null) {
 
-			this.dataMsgListener = listener;
+			this.actuatorDataListener = listener;
 
 		}
 	}
@@ -230,8 +230,15 @@ public class DeviceDataManager implements IDataMessageListener
 				_Logger.severe("Error! Failed to connect MQTT client to broker.");
 			}
 		}
-	}
 
+		if (this.enableCoapServer && this.coapServer != null) {
+			if (this.coapServer.startServer()) {
+				_Logger.info("CoAP server started.");
+			} else {
+				_Logger.severe("Failed to start CoAP server. Check log file for details.");
+			}
+		}
+	}
 
 
 	public void stopManager() {
@@ -258,6 +265,14 @@ public class DeviceDataManager implements IDataMessageListener
 					_Logger.info("Successfully disconnected MQTT client from broker.");
 			} else {
 				_Logger.severe("Error! Failed to disconnect MQTT client from broker.");
+			}
+		}
+
+		if (this.enableCoapServer && this.coapServer != null) {
+			if (this.coapServer.stopServer()) {
+				_Logger.info("CoAP server stopped.");
+			} else {
+				_Logger.severe("Failed to stop CoAP server. Check log file for details.");
 			}
 		}
 	}
@@ -297,7 +312,8 @@ public class DeviceDataManager implements IDataMessageListener
 		}
 
 		if (this.enableCoapServer) {
-			// TODO: implement this in Lab Module 8
+			this.coapServer = new CoapServerGateway(this);
+
 		}
 
 		if (this.enableCloudClient) {
@@ -312,10 +328,16 @@ public class DeviceDataManager implements IDataMessageListener
 
 	private void handleIncomingDataAnalysis(ResourceNameEnum resourceName, ActuatorData data) {
 
-		_Logger.info("handleIncomingDataAnalysis for ActuatorData has been called");
+		_Logger.info("Analyzing incoming actuator data: " + data.getName());
 
+		if (data.isResponseFlagEnabled()) {
+			// TODO: implement this
+		} else {
+			if (this.actuatorDataListener != null) {
+				this.actuatorDataListener.onActuatorDataUpdate(data);
+			}
+		}
 	}
-
 
 	private void handleIncomingDataAnalysis(ResourceNameEnum resourceName, SystemStateData data) {
 
