@@ -14,7 +14,7 @@ import programmingtheiot.data.DataUtil;
 import programmingtheiot.data.SystemPerformanceData;
 
 
-public class UpdateTelemetryResourceHandler extends CoapResource{
+public class UpdateTelemetryResourceHandler extends GenericCoapResourceHandler{
     // static
 
     private static final Logger _Logger =

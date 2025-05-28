@@ -14,7 +14,7 @@ import programmingtheiot.common.ResourceNameEnum;
 import programmingtheiot.data.ActuatorData;
 
 
-public class GetActuatorCommandResourceHandler extends CoapResource implements IActuatorDataListener {
+public class GetActuatorCommandResourceHandler extends GenericCoapResourceHandler implements IActuatorDataListener {
     // static
 
     // logging infrastructure - should already be defined, although you'll need
