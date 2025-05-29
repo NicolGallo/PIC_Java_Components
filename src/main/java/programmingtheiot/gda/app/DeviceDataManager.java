@@ -211,20 +211,20 @@ public class DeviceDataManager implements IDataMessageListener
 			if (this.mqttClient.connectClient()) {
 				_Logger.info("Successfully connected MQTT client to broker.");
 
-				int qos = ConfigUtil.getInstance().getInteger(
-						ConfigConst.MQTT_GATEWAY_SERVICE,
-						ConfigConst.DEFAULT_QOS_KEY,
-						ConfigConst.DEFAULT_QOS);
+				//int qos = ConfigUtil.getInstance().getInteger(
+						//ConfigConst.MQTT_GATEWAY_SERVICE,
+						//ConfigConst.DEFAULT_QOS_KEY,
+						//ConfigConst.DEFAULT_QOS);
 
 				// IMPORTANT NOTE: The 'subscribeToTopic()' method calls shown
 				// below will be moved to MqttClientConnector.connectComplete()
 				// in Lab Module 10. For now, they can remain here.
-				for (ResourceNameEnum topic : topics) {
-					boolean flag = this.mqttClient.subscribeToTopic(topic, qos);
-					if (!flag) {
-						_Logger.warning("Error! Failed to subscribe to this topic: " + topic);
-					}
-				}
+				//for (ResourceNameEnum topic : topics) {
+					//boolean flag = this.mqttClient.subscribeToTopic(topic, qos);
+					//if (!flag) {
+						//_Logger.warning("Error! Failed to subscribe to this topic: " + topic);
+					//}
+				//}
 
 			} else {
 				_Logger.severe("Error! Failed to connect MQTT client to broker.");
