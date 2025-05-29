@@ -661,8 +661,4 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 		return false;
 
 	}
-
-
-
-
 }
