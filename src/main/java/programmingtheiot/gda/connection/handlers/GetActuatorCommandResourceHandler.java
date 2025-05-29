@@ -1,11 +1,14 @@
 package programmingtheiot.gda.connection.handlers;
 
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.eclipse.californium.core.observe.ObserveRelation;
 
 import programmingtheiot.common.*;
 import programmingtheiot.data.DataUtil;
@@ -70,13 +73,22 @@ public class GetActuatorCommandResourceHandler extends GenericCoapResourceHandle
         // Actuator created only for testing CoapClientConnectorTest in CDA to ensure that testGetActuatorCommandCon() and
         // testGetActuatorCommandNon() run correctly
 
-        //if (this.actuatorData == null) {
-            //this.actuatorData = new ActuatorData();
-            //this.actuatorData.setName("TestActuator");
-            //this.actuatorData.setValue(42.0f);  // o cualquier valor representativo
-            //this.actuatorData.setStateData("Test state");
-            //this.actuatorData.setCommand(1);   // por ejemplo, "ON"
-        //}
+        if (this.actuatorData == null) {
+            this.actuatorData = new ActuatorData();
+            this.actuatorData.setName("TestActuator");
+            this.actuatorData.setValue(42.0f);
+            this.actuatorData.setStateData("Test state");
+            this.actuatorData.setCommand(1);
+        }
+
+        // Simulation of periodic updates to check the correct functioning of the test CoapClientConnectorTest in CDA.
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                actuatorData.setValue((float)(Math.random() * 100));
+                onActuatorDataUpdate(actuatorData);
+            }
+        }, 2000, 5000);
 
         // Convert the locally stored ActuatorData to JSON using DataUtil
         String jsonData = DataUtil.getInstance().actuatorDataToJson(this.actuatorData);
