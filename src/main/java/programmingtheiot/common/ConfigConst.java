@@ -285,7 +285,15 @@ public class ConfigConst
 	public static final String DATABASE_KEY        = "database";
 	public static final String ENV_DATA_BUCKET_KEY = "envDataBucket";
 	public static final String SYS_DATA_BUCKET_KEY = "sysDataBucket";
-	
+
+
+	// Additions for constants at threshold crossing rules (lab module 10)
+	public static final String HUMIDITY_MAX_TIME_PAST_THRESHOLD_KEY = "humidityMaxTimePastThreshold";
+	public static final String NOMINAL_HUMIDITY_SETTING_KEY = "nominalHumiditySetting";
+	public static final String TRIGGER_HUMIDIFIER_FLOOR_KEY = "triggerHumidifierFloor";
+	public static final String TRIGGER_HUMIDIFIER_CEILING_KEY = "triggerHumidifierCeiling";
+	public static final String HANDLE_HUMIDITY_CHANGE_ON_DEVICE_KEY = "handleHumidityChangeOnDevice";
+
 	// constructors
 	
 	/**

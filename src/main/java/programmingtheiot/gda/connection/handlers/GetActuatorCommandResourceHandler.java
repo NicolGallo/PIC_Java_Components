@@ -67,6 +67,17 @@ public class GetActuatorCommandResourceHandler extends GenericCoapResourceHandle
         // accept the request
         context.accept();
 
+        // Actuator created only for testing CoapClientConnectorTest in CDA to ensure that testGetActuatorCommandCon() and
+        // testGetActuatorCommandNon() run correctly
+
+        //if (this.actuatorData == null) {
+            //this.actuatorData = new ActuatorData();
+            //this.actuatorData.setName("TestActuator");
+            //this.actuatorData.setValue(42.0f);  // o cualquier valor representativo
+            //this.actuatorData.setStateData("Test state");
+            //this.actuatorData.setCommand(1);   // por ejemplo, "ON"
+        //}
+
         // Convert the locally stored ActuatorData to JSON using DataUtil
         String jsonData = DataUtil.getInstance().actuatorDataToJson(this.actuatorData);
 
