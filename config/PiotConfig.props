@@ -86,10 +86,10 @@ testEmptyApp            = False
 handleHumidityChangeOnDevice = True
 
 # min seconds between readings before triggering actuation event
-humidityMaxTimePastThreshold = 300
+humidityMaxTimePastThreshold = 5
 
 # ideal average humidity level (% relative)
-nominalHumiditySetting       = 40.0
+nominalHumiditySetting       = 45.0
 
 # min value before turning on humidifier (% relative)
 triggerHumidifierFloor       = 30.0

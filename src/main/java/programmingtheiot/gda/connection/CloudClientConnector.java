@@ -108,8 +108,11 @@ public class CloudClientConnector implements ICloudClient, IConnectionListener {
 	}
 
 	@Override
-	public boolean setDataMessageListener(IDataMessageListener listener)
-	{
+	public boolean setDataMessageListener(IDataMessageListener listener) {
+		if (listener != null) {
+			this.dataMsgListener = listener;
+			return true;
+		}
 		return false;
 	}
 
@@ -119,6 +122,10 @@ public class CloudClientConnector implements ICloudClient, IConnectionListener {
 		if (resource != null && data != null) {
 
 			String payload = DataUtil.getInstance().sensorDataToJson(data);
+
+			String ubidotsPayload = "{\"" + data.getName() + "\":" + data.getValue() + "}";
+			String ubidotsTopic = "/v1.6/devices/ConstrainedDevice";
+			publishMessageToCloud(ubidotsTopic, ubidotsPayload);
 
 			return publishMessageToCloud(resource, data.getName(), payload);
 
@@ -137,6 +144,11 @@ public class CloudClientConnector implements ICloudClient, IConnectionListener {
 			cpuData.setName(ConfigConst.CPU_UTIL_NAME);
 			cpuData.setValue(data.getCpuUtilization());
 
+			String cpuPayload = DataUtil.getInstance().sensorDataToJson(cpuData);
+			String cpuUbidotsPayload = "{\"" + cpuData.getName() + "\":" + cpuData.getValue() + "}";
+			String ubidotsTopic = "/v1.6/devices/ConstrainedDevice";
+			publishMessageToCloud(ubidotsTopic, cpuUbidotsPayload);
+
 			boolean cpuDataSuccess = sendEdgeDataToCloud(resource, cpuData);
 
 			if (! cpuDataSuccess) {
@@ -148,6 +160,10 @@ public class CloudClientConnector implements ICloudClient, IConnectionListener {
 			memData.updateData(data);
 			memData.setName(ConfigConst.MEM_UTIL_NAME);
 			memData.setValue(data.getMemoryUtilization());
+
+			String memPayload = DataUtil.getInstance().sensorDataToJson(memData);
+			String memUbidotsPayload = "{\"" + memData.getName() + "\":" + memData.getValue() + "}";
+			publishMessageToCloud(ubidotsTopic, memUbidotsPayload);
 
 			boolean memDataSuccess = sendEdgeDataToCloud(resource, memData);
 
