@@ -157,7 +157,7 @@ public class DeviceDataManager implements IDataMessageListener
 			_Logger.info("Handling actuator response: " + data.getName());
 
 			// this next call is optional for now
-			//this.handleIncomingDataAnalysis(resourceName, data);
+			this.handleIncomingDataAnalysis(resourceName, data);
 
 			if (data.hasError()) {
 				_Logger.warning("Error flag set for ActuatorData instance.");
@@ -207,16 +207,50 @@ public class DeviceDataManager implements IDataMessageListener
 
 
 	@Override
-	public boolean handleIncomingMessage(ResourceNameEnum resourceName, String msg) {
+	public boolean handleIncomingMessage(ResourceNameEnum resourceName, String msg)
+	{
+		if (resourceName != null && msg != null) {
+			try {
+				if (resourceName == ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE) {
+					_Logger.info("Handling incoming ActuatorData message: " + msg);
 
-		if (msg != null) {
-			_Logger.info("Handling incoming generic message: " + msg);
+					// NOTE: it may seem wasteful to convert to ActuatorData and back while
+					// the JSON data is already available; however, this provides a validation
+					// scheme to ensure the data is actually an 'ActuatorData' instance
+					// prior to sending off to the CDA
+					ActuatorData ad = DataUtil.getInstance().jsonToActuatorData(msg);
+					String jsonData = DataUtil.getInstance().actuatorDataToJson(ad);
 
-			return true;
+					if (this.mqttClient != null) {
+
+						int qos = ConfigUtil.getInstance().getInteger(ConfigConst.MQTT_GATEWAY_SERVICE,
+								ConfigConst.DEFAULT_QOS_KEY, ConfigConst.DEFAULT_QOS);
+
+						_Logger.fine("Publishing data to MQTT broker: " + jsonData);
+						return this.mqttClient.publishMessage(resourceName, jsonData, qos);
+
+					}
+
+				} else {
+
+					_Logger.warning("FAILED to parse incoming message. Unknown type: " + msg);
+
+					return false;
+
+				}
+			} catch (Exception e) {
+
+				_Logger.log(Level.WARNING, "FAILED to process incoming message for resource: " + resourceName, e);
+
+			}
+
 		} else {
-			return false;
+
+			_Logger.warning("Incoming message has no data. IGNORING for resource: " + resourceName);
+
 		}
 
+		return false;
 	}
 
 	@Override
@@ -461,13 +495,7 @@ public class DeviceDataManager implements IDataMessageListener
 
 	public void startManager() {
 
-		_Logger.info("Starting DeviceDataManager...");
-
-		if (this.sysPerfMgr != null) {
-
-			this.sysPerfMgr.startManager();
-
-		}
+		//_Logger.info("Starting DeviceDataManager...");
 
 		if (this.mqttClient != null) {
 
@@ -495,6 +523,12 @@ public class DeviceDataManager implements IDataMessageListener
 			}
 		}
 
+		if (this.sysPerfMgr != null) {
+
+			this.sysPerfMgr.startManager();
+
+		}
+
 		if (this.enableCoapServer && this.coapServer != null) {
 
 			if (this.coapServer.startServer()) {
@@ -506,6 +540,12 @@ public class DeviceDataManager implements IDataMessageListener
 				_Logger.severe("Failed to start CoAP server. Check log file for details.");
 
 			}
+		}
+
+		if (this.cloudClient != null) {
+
+			this.cloudClient.connectClient();
+
 		}
 	}
 
@@ -559,6 +599,13 @@ public class DeviceDataManager implements IDataMessageListener
 
 			}
 		}
+
+		if (this.cloudClient != null) {
+
+			this.cloudClient.disconnectClient();
+
+		}
+
 	}
 
 	
@@ -601,12 +648,12 @@ public class DeviceDataManager implements IDataMessageListener
 		}
 
 		if (this.enableCloudClient) {
-			// TODO: implement this in Lab Module 10
+			this.cloudClient = new CloudClientConnector();
+			_Logger.info("Cloud client enabled");
 		}
 
 		if (this.enablePersistenceClient) {
 			// TODO: implement this as an optional exercise in Lab Module 5
-
 		}
 	}
 

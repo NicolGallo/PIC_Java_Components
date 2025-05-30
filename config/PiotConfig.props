@@ -11,8 +11,8 @@
 # Cloud client configuration information
 #
 [Cloud.GatewayService]
-credFile       = /home/student/Escritorio/cloud/credencials.props
-certFile       = /home/student/Escritorio/cloud/industrial.pem
+credFile       = /home/student/Escritorio/cloud/UbidotsCloudCred.props
+certFile       = /home/student/Escritorio/cloud/UbidotsCloudCert.pem
 host           = industrial.api.ubidots.com
 port           = 1883
 securePort     = 8883
@@ -21,7 +21,7 @@ keepAlive      = 60
 useAsyncClient = True
 enableAuth     = True
 enableCrypt    = True
-baseUrl        = 
+baseUrl        = https://things.ubidots.com/api/v1.6/
 baseTopic      = /v1.6/devices/
 
 #
@@ -47,7 +47,7 @@ securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 60
 enableAuth     = False
-enableCrypt    = False
+enableCrypt    = True
 useAsyncClient = True
 
 #
@@ -71,12 +71,12 @@ deviceLocationID        = gatewaydevice001
 enableLogging           = True
 pollCycleSecs           = 60
 enableMqttClient        = True
-enableCoapServer        = True
+enableCoapServer        = False
 enableCoapClient        = False
 enableCloudClient       = False
 enableSmtpClient        = False
 enablePersistenceClient = False
-enableSystemPerformance = True
+enableSystemPerformance = False
 testGdaDataPath         = /tmp/gda-data
 testCdaDataPath         = /tmp/cda-data
 testEmptyApp            = False

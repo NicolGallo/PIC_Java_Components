@@ -347,34 +347,22 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 		_Logger.info("MQTT message arrived on topic: " + topic);
 		_Logger.info("Payload content: " + payload);
 
-
+		/*
 		if (this.dataMsgListener == null) {
 			_Logger.warning("No data message listener set. Ignoring message.");
 			return;
 		}
-
+		*/
 
 		try {
 			if (topic.equals(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE.getResourceName())) {
-
-				ActuatorData data = DataUtil.getInstance().jsonToActuatorData(payload);
-				_Logger.info("Parsed ActuatorData: " + data);
-				this.dataMsgListener.handleActuatorCommandResponse(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE, data);
-
+				messageArrivedActuatorData(topic, msg);
 			} else if (topic.equals(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE.getResourceName())) {
-
-				SensorData data = DataUtil.getInstance().jsonToSensorData(payload);
-				_Logger.info("Parsed SensorData: " + data);
-				this.dataMsgListener.handleSensorMessage(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, data);
-
+				messageArrivedSensorData(topic, msg);
 			} else if (topic.equals(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE.getResourceName())) {
-
-				SystemPerformanceData data = DataUtil.getInstance().jsonToSystemPerformanceData(payload);
-				_Logger.info("Parsed SystemPerformanceData: " + data);
-				this.dataMsgListener.handleSystemPerformanceMessage(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, data);
-
+				messageArrivedSystemPerformanceData(topic, msg);
 			} else {
-				_Logger.warning("Received message with unknown topic: " + topic);
+				_Logger.warning("Tema desconocido recibido: " + topic);
 			}
 		} catch (Exception e) {
 			_Logger.log(Level.SEVERE, "Failed to process message for topic: " + topic, e);
@@ -542,6 +530,63 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 		}
 	}
 
+	private void messageArrivedSensorData(String topic, MqttMessage msg) throws Exception {
+		String payload = new String(msg.getPayload());
+		_Logger.info("Mensaje recibido en el tema: " + topic);
+
+		try {
+			// Procesar el mensaje como SensorData
+			SensorData sensorData = DataUtil.getInstance().jsonToSensorData(payload);
+			_Logger.info("Recibido SensorData: " + sensorData.getValue());
+
+			// Llamar al listener de SensorData
+			if (this.dataMsgListener != null) {
+				this.dataMsgListener.handleSensorMessage(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, sensorData);
+			}
+		} catch (Exception e) {
+			_Logger.warning("Error al procesar SensorData: " + e.getMessage());
+		}
+	}
+
+	private void messageArrivedSystemPerformanceData(String topic, MqttMessage msg) throws Exception {
+		String payload = new String(msg.getPayload());
+		_Logger.info("Mensaje recibido en el tema: " + topic);
+
+		try {
+			// Procesar el mensaje como SystemPerformanceData
+			SystemPerformanceData systemPerformanceData = DataUtil.getInstance().jsonToSystemPerformanceData(payload);
+			// _Logger.info("Recibido SystemPerformanceData: " +
+			// systemPerformanceData.getValue());
+
+			// Llamar al listener de SystemPerformanceData
+			if (this.dataMsgListener != null) {
+				this.dataMsgListener.handleSystemPerformanceMessage(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE,
+						systemPerformanceData);
+			}
+		} catch (Exception e) {
+			_Logger.warning("Error al procesar SystemPerformanceData: " + e.getMessage());
+		}
+	}
+
+	private void messageArrivedActuatorData(String topic, MqttMessage msg) throws Exception {
+		String payload = new String(msg.getPayload());
+		_Logger.info("Mensaje recibido en el tema: " + topic);
+
+		try {
+			// Procesar el mensaje como ActuatorData
+			ActuatorData actuatorData = DataUtil.getInstance().jsonToActuatorData(payload);
+			_Logger.info("Recibido ActuatorData: " + actuatorData.getValue());
+
+			// Llamar al listener de ActuatorData
+			if (this.dataMsgListener != null) {
+				this.dataMsgListener.handleActuatorCommandResponse(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE,
+						actuatorData);
+			}
+		} catch (Exception e) {
+			_Logger.warning("Error al procesar ActuatorData: " + e.getMessage());
+		}
+	}
+
 
 	//protected methods implementation
 
@@ -651,7 +696,19 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 		}
 
 		try {
-			this.mqttClient.unsubscribe(topicName);
+			if (this.useAsyncClient) {
+
+				this.mqttAsyncClient.unsubscribe(topicName);
+				_Logger.info(
+						"SUCCESS! ASYNC Client successfully unsubscribed from topic: " + topicName);
+
+			} else {
+
+				this.mqttClient.unsubscribe(topicName);
+				_Logger.info(
+						"SUCCESS! SYNC Client successfully unsubscribed from topic: " + topicName);
+
+			}
 			_Logger.info("Successfully unsubscribed from topic: " + topicName);
 			return true;
 		} catch (Exception e) {
@@ -659,6 +716,5 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 		}
 
 		return false;
-
 	}
 }
