@@ -362,7 +362,7 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 			} else if (topic.equals(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE.getResourceName())) {
 				messageArrivedSystemPerformanceData(topic, msg);
 			} else {
-				_Logger.warning("Tema desconocido recibido: " + topic);
+				_Logger.warning("Topic unknown recieved: " + topic);
 			}
 		} catch (Exception e) {
 			_Logger.log(Level.SEVERE, "Failed to process message for topic: " + topic, e);
