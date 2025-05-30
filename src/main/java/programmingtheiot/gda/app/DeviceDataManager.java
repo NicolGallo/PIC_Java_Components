@@ -157,7 +157,7 @@ public class DeviceDataManager implements IDataMessageListener
 			_Logger.info("Handling actuator response: " + data.getName());
 
 			// this next call is optional for now
-			this.handleIncomingDataAnalysis(resourceName, data);
+			//this.handleIncomingDataAnalysis(resourceName, data);
 
 			if (data.hasError()) {
 				_Logger.warning("Error flag set for ActuatorData instance.");
@@ -186,8 +186,8 @@ public class DeviceDataManager implements IDataMessageListener
 				_Logger.warning("Error flag set for ActuatorData instance.");
 			}
 
-			// TODO: retrieve this from config file
-			int qos = ConfigConst.DEFAULT_QOS;
+			int qos = ConfigUtil.getInstance().getInteger(ConfigConst.MQTT_GATEWAY_SERVICE,
+					ConfigConst.DEFAULT_QOS_KEY, ConfigConst.DEFAULT_QOS);
 
 			// TODO: you may want to implement some analysis logic here or
 			// in a separate method to determine how best to handle incoming

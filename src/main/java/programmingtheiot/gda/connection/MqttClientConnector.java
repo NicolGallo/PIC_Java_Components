@@ -532,58 +532,53 @@ public class MqttClientConnector implements IPubSubClient, MqttCallbackExtended
 
 	private void messageArrivedSensorData(String topic, MqttMessage msg) throws Exception {
 		String payload = new String(msg.getPayload());
-		_Logger.info("Mensaje recibido en el tema: " + topic);
+		_Logger.info("Message recieved at topic: " + topic);
 
 		try {
-			// Procesar el mensaje como SensorData
-			SensorData sensorData = DataUtil.getInstance().jsonToSensorData(payload);
-			_Logger.info("Recibido SensorData: " + sensorData.getValue());
 
-			// Llamar al listener de SensorData
+			SensorData sensorData = DataUtil.getInstance().jsonToSensorData(payload);
+			_Logger.info("SensorData recieved: " + sensorData.getValue());
+
 			if (this.dataMsgListener != null) {
 				this.dataMsgListener.handleSensorMessage(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, sensorData);
 			}
 		} catch (Exception e) {
-			_Logger.warning("Error al procesar SensorData: " + e.getMessage());
+			_Logger.warning("ERROR to processing SensorData: " + e.getMessage());
 		}
 	}
 
 	private void messageArrivedSystemPerformanceData(String topic, MqttMessage msg) throws Exception {
 		String payload = new String(msg.getPayload());
-		_Logger.info("Mensaje recibido en el tema: " + topic);
+		_Logger.info("Message recieved at topic:  " + topic);
 
 		try {
-			// Procesar el mensaje como SystemPerformanceData
-			SystemPerformanceData systemPerformanceData = DataUtil.getInstance().jsonToSystemPerformanceData(payload);
-			// _Logger.info("Recibido SystemPerformanceData: " +
-			// systemPerformanceData.getValue());
 
-			// Llamar al listener de SystemPerformanceData
+			SystemPerformanceData systemPerformanceData = DataUtil.getInstance().jsonToSystemPerformanceData(payload);
+
 			if (this.dataMsgListener != null) {
 				this.dataMsgListener.handleSystemPerformanceMessage(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE,
 						systemPerformanceData);
 			}
 		} catch (Exception e) {
-			_Logger.warning("Error al procesar SystemPerformanceData: " + e.getMessage());
+			_Logger.warning("ERROR to processing SystemPerformanceData " + e.getMessage());
 		}
 	}
 
 	private void messageArrivedActuatorData(String topic, MqttMessage msg) throws Exception {
 		String payload = new String(msg.getPayload());
-		_Logger.info("Mensaje recibido en el tema: " + topic);
+		_Logger.info("Message recieved at topic: " + topic);
 
 		try {
-			// Procesar el mensaje como ActuatorData
-			ActuatorData actuatorData = DataUtil.getInstance().jsonToActuatorData(payload);
-			_Logger.info("Recibido ActuatorData: " + actuatorData.getValue());
 
-			// Llamar al listener de ActuatorData
+			ActuatorData actuatorData = DataUtil.getInstance().jsonToActuatorData(payload);
+			_Logger.info("ActuatorData recieved: " + actuatorData.getValue());
+
 			if (this.dataMsgListener != null) {
 				this.dataMsgListener.handleActuatorCommandResponse(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE,
 						actuatorData);
 			}
 		} catch (Exception e) {
-			_Logger.warning("Error al procesar ActuatorData: " + e.getMessage());
+			_Logger.warning("ERROR to processing ActuatorData: " + e.getMessage());
 		}
 	}
 
